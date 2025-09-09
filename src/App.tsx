@@ -1,7 +1,30 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { createGlobalStyle } from 'styled-components';
+import { createGlobalStyle, styled } from 'styled-components';
 import LandingPage from './components/LandingPage';
 import Quiz from './components/Quiz';
+import Header from './components/Header';
+import Footer from './components/Footer';
+
+const AppContainer = styled.div`
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+`;
+
+const MainContent = styled.main`
+  flex: 1;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+`;
+
+const ContentBox = styled.div`
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 30px;
+`;
 
 const GlobalStyle = createGlobalStyle`
   * {
@@ -34,11 +57,19 @@ const App = () => {
   return (
     <Router>
       <GlobalStyle />
-      <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/quiz" element={<Quiz />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
+      <AppContainer>
+        <Header />
+        <MainContent>
+          <ContentBox>
+            <Routes>
+              <Route path="/" element={<LandingPage />} />
+              <Route path="/quiz" element={<Quiz />} />
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </ContentBox>
+        </MainContent>
+        <Footer />
+      </AppContainer>
     </Router>
   );
 };

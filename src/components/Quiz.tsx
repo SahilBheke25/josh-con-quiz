@@ -1,22 +1,19 @@
 import { useState, useEffect } from 'react';
-import { useLocation, Navigate } from 'react-router-dom';
+import { useLocation, Navigate, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { Question } from '../types/quiz';
 import { fetchQuizQuestions } from '../services/quizService';
 import axios from 'axios';
 
 const QuizContainer = styled.div`
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 20px;
+  width: 100%;
 `;
 
 const QuestionCard = styled.div`
-  background: white;
+  border: 1px solid #eee;
   padding: 20px;
   border-radius: 8px;
   margin-bottom: 20px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 `;
 
 const QuestionText = styled.h3`
@@ -73,13 +70,16 @@ const ResultMessage = styled.div`
   text-align: center;
   margin-top: 20px;
   padding: 20px;
-  background-color: #e9ecef;
+  background-color: #f8f9fa;
   border-radius: 8px;
+  border: 1px solid #eee;
 
   h2 {
     color: #333;
     margin-bottom: 10px;
-  }
+  }feature/ui-improvements → for general UI updates
+
+
 
   p {
     color: #666;
@@ -96,6 +96,7 @@ const LoadingMessage = styled.div`
 
 const Quiz = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const email = location.state?.email;
   const [questions, setQuestions] = useState([] as Question[]);
   const [currentAnswers, setCurrentAnswers] = useState({} as Record<number, string>);
@@ -104,19 +105,31 @@ const Quiz = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const loadQuestions = async () => {
+    const checkAndLoadQuestions = async () => {
       try {
+        // First check if user has already attempted
+        const checkResponse = await axios.post<{ status: string }>('https://workflow.joshsoftware.com/webhook/josh-quiz/check', { email });
+        
+        if (checkResponse.data.status === 'attempted') {
+          // User has already attempted, redirect to landing page
+          navigate('/', { replace: true });
+          return;
+        }
+
+        // If not attempted, load questions
         const quizQuestions = await fetchQuizQuestions();
         setQuestions(quizQuestions);
       } catch (error) {
-        console.error('Error loading questions:', error);
+        console.error('Error:', error);
       } finally {
         setIsLoading(false);
       }
     };
 
-    loadQuestions();
-  }, []);
+    if (email) {
+      checkAndLoadQuestions();
+    }
+  }, [email]);
 
   const handleAnswerChange = (questionId: number, answer: string) => {
     setCurrentAnswers(prev => ({

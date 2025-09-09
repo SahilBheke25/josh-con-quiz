@@ -1,21 +1,14 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import styled from "styled-components";
-import axios from "axios";
-import { EmailCheckResponse } from "../types/quiz";
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
+import axios from 'axios';
+import { EmailCheckResponse } from '../types/quiz';
 const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 100vh;
-  padding: 20px;
-  background-color: #f5f5f5;
-`;
-
-const Logo = styled.img`
-  max-width: 200px;
-  margin-bottom: 30px;
+  padding: 20px 0;
 `;
 
 const Title = styled.h1`
@@ -69,17 +62,15 @@ const Message = styled.div<{ error?: boolean }>`
   padding: 10px;
   border-radius: 4px;
   text-align: center;
-  ${(props) =>
-    props.error &&
-    `
+  ${props => props.error && `
     color: #dc3545;
     background-color: #f8d7da;
   `}
 `;
 
 const LandingPage = () => {
-  const [email, setEmail] = useState("");
-  const [message, setMessage] = useState("");
+  const [email, setEmail] = useState('');
+  const [message, setMessage] = useState('');
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
@@ -90,38 +81,28 @@ const LandingPage = () => {
 
     try {
       // TODO: Replace with actual n8n webhook URL
-      const response = await axios.post<EmailCheckResponse>(
-        "https://workflow.joshsoftware.com/webhook/josh-quiz/check",
-        { email }
-      );
-      console.log(response.data);
-
+      const response = await axios.post<EmailCheckResponse>('https://workflow.joshsoftware.com/webhook/josh-quiz/check', { email });
+      
       switch (response.data.status) {
-        case "not_registered":
-          setMessage(
-            `You are not registered. Please scan the QR code at Josh's booth to get started.'`
-          );
+        case 'not_registered':
+          setMessage('You are not registered. Please complete registration first.');
           setIsError(true);
           break;
-        case "attempted":
-          setMessage(
-            `You have already attempted this quiz, If you haven't received the swags, please contact to our booth`
-          );
+        case 'attempted':
+          setMessage('You have already attempted this quiz.');
           setIsError(true);
           break;
-        case "not_attempted":
-          setMessage("Loading quiz...");
+        case 'not_attempted':
+          setMessage('Loading quiz...');
           setIsError(false);
-          navigate("/quiz", { state: { email } });
+          navigate('/quiz', { state: { email } });
           break;
         default:
-          setMessage(
-            "You cannot attempt the quiz, please contact to our booth"
-          );
+          setMessage('An error occurred. Please try again.');
           setIsError(true);
       }
     } catch (error) {
-      setMessage("You cannot attempt the quiz, please contact to our booth");
+      setMessage('An error occurred. Please try again.');
       setIsError(true);
     } finally {
       setIsLoading(false);
@@ -130,7 +111,6 @@ const LandingPage = () => {
 
   return (
     <Container>
-      <Logo src="../assets/joshl.svg" alt="Josh Software Logo" />
       <Title>Welcome to the Josh Software Quiz!</Title>
       <Form onSubmit={handleSubmit}>
         <Input
@@ -142,10 +122,12 @@ const LandingPage = () => {
           disabled={isLoading}
         />
         <Button type="submit" disabled={isLoading}>
-          {isLoading ? "Loading..." : "Start Quiz"}
+          {isLoading ? 'Loading...' : 'Start Quiz'}
         </Button>
       </Form>
-      {message && <Message error={isError}>{message}</Message>}
+      {message && (
+        <Message error={isError}>{message}</Message>
+      )}
     </Container>
   );
 };
