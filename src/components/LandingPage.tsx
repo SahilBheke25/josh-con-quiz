@@ -8,14 +8,6 @@ const Container = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 100vh;
-  padding: 20px;
-  background-color: #f5f5f5;
-`;
-
-const Logo = styled.img`
-  max-width: 200px;
-  margin-bottom: 30px;
 `;
 
 const Title = styled.h1`
@@ -130,7 +122,6 @@ const LandingPage = () => {
 
   return (
     <Container>
-      <Logo src="../assets/joshl.svg" alt="Josh Software Logo" />
       <Title>Welcome to the Josh Software Quiz!</Title>
       <Form onSubmit={handleSubmit}>
         <Input
