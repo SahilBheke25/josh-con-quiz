@@ -136,7 +136,7 @@ const Quiz = () => {
     setScore(correctAnswers);
     
     try {
-      await axios.post('https://workflow.joshsoftware.com/webhook-test/josh-quiz/submit', {
+      await axios.post('https://workflow.joshsoftware.com/webhook/josh-quiz/submit', {
         email,
         score: correctAnswers
       });
