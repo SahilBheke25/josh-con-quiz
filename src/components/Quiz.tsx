@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react';
-import { useLocation, Navigate, useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
-import { Question } from '../types/quiz';
-import { fetchQuizQuestions } from '../services/quizService';
-import axios from 'axios';
+import { useState, useEffect } from "react";
+import { useLocation, Navigate, useNavigate } from "react-router-dom";
+import styled from "styled-components";
+import { Question } from "../types/quiz";
+import { fetchQuizQuestions } from "../services/quizService";
+import axios from "axios";
 
 const QuizContainer = styled.div`
   width: 100%;
@@ -77,11 +77,8 @@ const ResultMessage = styled.div`
   h2 {
     color: #333;
     margin-bottom: 10px;
-  }feature/ui-improvements → for general UI updates
-
-
-
-  p {
+  }
+  feature/ui-improvements → for general UI updates p {
     color: #666;
     margin-bottom: 15px;
   }
@@ -99,7 +96,9 @@ const Quiz = () => {
   const navigate = useNavigate();
   const email = location.state?.email;
   const [questions, setQuestions] = useState([] as Question[]);
-  const [currentAnswers, setCurrentAnswers] = useState({} as Record<number, string>);
+  const [currentAnswers, setCurrentAnswers] = useState(
+    {} as Record<number, string>
+  );
   const [showResult, setShowResult] = useState(false);
   const [score, setScore] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
@@ -108,11 +107,14 @@ const Quiz = () => {
     const checkAndLoadQuestions = async () => {
       try {
         // First check if user has already attempted
-        const checkResponse = await axios.post<{ status: string }>('https://workflow.joshsoftware.com/webhook/josh-quiz/check', { email });
-        
-        if (checkResponse.data.status === 'attempted') {
+        const checkResponse = await axios.post<{ status: string }>(
+          "https://workflow.joshsoftware.com/webhook/josh-quiz/check",
+          { email }
+        );
+
+        if (checkResponse.data.status === "attempted") {
           // User has already attempted, redirect to landing page
-          navigate('/', { replace: true });
+          navigate("/", { replace: true });
           return;
         }
 
@@ -120,7 +122,7 @@ const Quiz = () => {
         const quizQuestions = await fetchQuizQuestions();
         setQuestions(quizQuestions);
       } catch (error) {
-        console.error('Error:', error);
+        console.error("Error:", error);
       } finally {
         setIsLoading(false);
       }
@@ -132,31 +134,36 @@ const Quiz = () => {
   }, [email]);
 
   const handleAnswerChange = (questionId: number, answer: string) => {
-    setCurrentAnswers(prev => ({
+    setCurrentAnswers((prev) => ({
       ...prev,
-      [questionId]: answer
+      [questionId]: answer,
     }));
   };
 
   const handleSubmit = async () => {
     let correctAnswers = 0;
-    questions.forEach(question => {
+    questions.forEach((question) => {
       if (currentAnswers[question.id] === question.correctAnswer) {
         correctAnswers++;
       }
     });
-    
-    setScore(correctAnswers);
-    
+
+    // each correct answer = 20 points
+    const totalScore = correctAnswers * 20;
+    setScore(totalScore);
+
     try {
-      await axios.post('https://workflow.joshsoftware.com/webhook/josh-quiz/submit', {
-        email,
-        score: correctAnswers
-      });
+      await axios.post(
+        "https://workflow.joshsoftware.com/webhook/josh-quiz/submit",
+        {
+          email,
+          score: totalScore,
+        }
+      );
       setShowResult(true);
     } catch (error) {
-      console.error('Error submitting quiz:', error);
-      alert('There was an error submitting your quiz. Please try again.');
+      console.error("Error submitting quiz:", error);
+      alert("There was an error submitting your quiz. Please try again.");
     }
   };
 
@@ -173,18 +180,23 @@ const Quiz = () => {
       <QuizContainer>
         <ResultMessage>
           <h2>Quiz Complete!</h2>
-          <p>You scored {score}/{questions.length}</p>
-          <p>To get your swags, post a screenshot of your score on LinkedIn or Twitter by tagging @JoshSoftware.</p>
+          <p>
+            You scored {score}/{questions.length * 20}
+          </p>
+          <p>
+            To get your swags, post a screenshot of your score on LinkedIn or
+            Twitter by tagging @JoshSoftware.
+          </p>
         </ResultMessage>
       </QuizContainer>
     );
   }
 
-  const allQuestionsAnswered = questions.every(q => currentAnswers[q.id]);
+  const allQuestionsAnswered = questions.every((q) => currentAnswers[q.id]);
 
   return (
     <QuizContainer>
-      {questions.map(question => (
+      {questions.map((question) => (
         <QuestionCard key={question.id}>
           <QuestionText>{question.question}</QuestionText>
           <Options>
@@ -203,10 +215,7 @@ const Quiz = () => {
           </Options>
         </QuestionCard>
       ))}
-      <SubmitButton 
-        onClick={handleSubmit}
-        disabled={!allQuestionsAnswered}
-      >
+      <SubmitButton onClick={handleSubmit} disabled={!allQuestionsAnswered}>
         Submit Quiz
       </SubmitButton>
     </QuizContainer>
