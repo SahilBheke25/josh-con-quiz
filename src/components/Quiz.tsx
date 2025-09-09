@@ -69,18 +69,188 @@ const SubmitButton = styled.button`
 const ResultMessage = styled.div`
   text-align: center;
   margin-top: 20px;
-  padding: 20px;
-  background-color: #f8f9fa;
-  border-radius: 8px;
-  border: 1px solid #eee;
+  padding: 40px 30px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  max-width: 500px;
+  margin: 20px auto;
 
   h2 {
-    color: #333;
-    margin-bottom: 10px;
+    color: #2c3e50;
+    margin-bottom: 30px;
+    font-size: 24px;
+    font-weight: 600;
   }
-  feature/ui-improvements → for general UI updates p {
+`;
+
+const SuccessIcon = styled.div`
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, #4caf50, #45a049);
+  border-radius: 50%;
+  margin: 0 auto 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: pulse 2s infinite;
+
+  &::after {
+    content: "✓";
+    color: white;
+    font-size: 40px;
+    font-weight: bold;
+  }
+
+  @keyframes pulse {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.05);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+`;
+
+const ScoreDisplay = styled.div`
+  margin-bottom: 40px;
+`;
+
+const ScoreLabel = styled.div`
+  font-size: 18px;
+  color: #7f8c8d;
+  margin-bottom: 10px;
+`;
+
+const ScoreValue = styled.div`
+  font-size: 48px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #3498db, #2980b9);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 15px;
+
+  @media (max-width: 480px) {
+    font-size: 36px;
+  }
+`;
+
+const PerformanceBadge = styled.div`
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  margin-top: 15px;
+
+  &.excellent {
+    background: rgba(46, 204, 113, 0.1);
+    color: #27ae60;
+  }
+  &.good {
+    background: rgba(52, 152, 219, 0.1);
+    color: #2980b9;
+  }
+  &.average {
+    background: rgba(241, 196, 15, 0.1);
+    color: #f39c12;
+  }
+  &.poor {
+    background: rgba(231, 76, 60, 0.1);
+    color: #e74c3c;
+  }
+`;
+
+const ScoreBreakdown = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  margin-top: 15px;
+  padding: 15px;
+  background: rgba(52, 152, 219, 0.1);
+  border-radius: 12px;
+`;
+
+const ScoreItem = styled.div`
+  text-align: center;
+
+  .number {
+    font-size: 24px;
+    font-weight: 600;
+    color: #2c3e50;
+  }
+
+  .label {
+    font-size: 12px;
+    color: #7f8c8d;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+`;
+
+const SocialShare = styled.div`
+  margin-top: 25px;
+  padding-top: 25px;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+
+  h4 {
+    color: #2c3e50;
+    margin-bottom: 15px;
+    font-size: 16px;
+    font-weight: 600;
+  }
+
+  p {
     color: #666;
     margin-bottom: 15px;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+`;
+
+const SocialButtons = styled.div`
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+
+  @media (max-width: 480px) {
+    flex-wrap: wrap;
+  }
+`;
+
+const SocialButton = styled.button`
+  width: 50px;
+  height: 50px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  color: white;
+  transition: all 0.3s ease;
+
+  &.linkedin {
+    background: #0077b5;
+  }
+
+  &.twitter {
+    background: #1da1f2;
+  }
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
   }
 `;
 
@@ -167,6 +337,26 @@ const Quiz = () => {
     }
   };
 
+  const shareToLinkedIn = () => {
+    const text = `I scored ${score}/${
+      questions.length * 20
+    } on Josh Software's quiz! 🎉`;
+    const url = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
+      window.location.href
+    )}`;
+    window.open(url, "_blank", "width=600,height=400");
+  };
+
+  const shareToTwitter = () => {
+    const text = `I scored ${score}/${
+      questions.length * 20
+    } on Josh Software's quiz! 🎉 @joshsoftware`;
+    const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+      text
+    )}`;
+    window.open(url, "_blank", "width=600,height=400");
+  };
+
   if (!email) {
     return <Navigate to="/" replace />;
   }
@@ -175,22 +365,49 @@ const Quiz = () => {
     return <LoadingMessage>Loading questions...</LoadingMessage>;
   }
 
-  if (showResult) {
-    return (
-      <QuizContainer>
-        <ResultMessage>
-          <h2>Quiz Complete!</h2>
-          <p>
-            You scored {score}/{questions.length * 20}
-          </p>
-          <p>
-            To get your swags, post a screenshot of your score on LinkedIn or
-            Twitter by tagging @JoshSoftware.
-          </p>
-        </ResultMessage>
-      </QuizContainer>
-    );
-  }
+ if (showResult) {
+  return (
+    <ResultMessage>
+      <SuccessIcon />
+      <h2>Quiz Completed Successfully!</h2>
+
+      <ScoreDisplay>
+        <ScoreLabel>Your Score</ScoreLabel>
+        <ScoreValue>
+          {score}/{questions.length * 20}
+        </ScoreValue>
+      </ScoreDisplay>
+
+      <SocialShare>
+        <h4>Claim Your Swags!</h4>
+        <b>
+          Take a screenshot of your score and tag @joshsoftware to claim your
+          swags!
+        </b>
+
+        {/* Wrap inside flex container */}
+        <SocialButtons>
+          <SocialButton className="linkedin" onClick={shareToLinkedIn}>
+            <img
+              src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/linkedin.svg"
+              alt="LinkedIn"
+              style={{ width: 24, height: 24 }}
+            />
+          </SocialButton>
+
+          <SocialButton className="twitter" onClick={shareToTwitter}>
+            <img
+              src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/twitter.svg"
+              alt="Twitter"
+              style={{ width: 24, height: 24 }}
+            />
+          </SocialButton>
+        </SocialButtons>
+      </SocialShare>
+    </ResultMessage>
+  );
+}
+
 
   const allQuestionsAnswered = questions.every((q) => currentAnswers[q.id]);
 
