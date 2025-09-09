@@ -80,16 +80,15 @@ const LandingPage = () => {
     setIsLoading(true);
 
     try {
-      // TODO: Replace with actual n8n webhook URL
       const response = await axios.post<EmailCheckResponse>('https://workflow.joshsoftware.com/webhook/josh-quiz/check', { email });
       
       switch (response.data.status) {
         case 'not_registered':
-          setMessage('You are not registered. Please complete registration first.');
+          setMessage(`You are not registered. Please scan the QR code at Josh's booth to get started.`);
           setIsError(true);
           break;
         case 'attempted':
-          setMessage('You have already attempted this quiz.');
+          setMessage(`You have already attempted this quiz, If you haven't received the swags, please contact to our booth`);
           setIsError(true);
           break;
         case 'not_attempted':
@@ -98,11 +97,11 @@ const LandingPage = () => {
           navigate('/quiz', { state: { email } });
           break;
         default:
-          setMessage('An error occurred. Please try again.');
+          setMessage("You cannot attempt the quiz, please contact to our booth");
           setIsError(true);
       }
     } catch (error) {
-      setMessage('An error occurred. Please try again.');
+      setMessage("You cannot attempt the quiz, please contact to our booth");
       setIsError(true);
     } finally {
       setIsLoading(false);
