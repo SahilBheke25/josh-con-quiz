@@ -5,6 +5,7 @@ import { Question } from "../types/quiz";
 import { fetchQuizQuestions } from "../services/quizService";
 import axios from "axios";
 
+// ---------- Styled Components ----------
 const QuizContainer = styled.div`
   width: 100%;
 `;
@@ -141,62 +142,6 @@ const ScoreValue = styled.div`
   }
 `;
 
-const PerformanceBadge = styled.div`
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 16px;
-  border-radius: 20px;
-  font-size: 14px;
-  font-weight: 600;
-  margin-top: 15px;
-
-  &.excellent {
-    background: rgba(46, 204, 113, 0.1);
-    color: #27ae60;
-  }
-  &.good {
-    background: rgba(52, 152, 219, 0.1);
-    color: #2980b9;
-  }
-  &.average {
-    background: rgba(241, 196, 15, 0.1);
-    color: #f39c12;
-  }
-  &.poor {
-    background: rgba(231, 76, 60, 0.1);
-    color: #e74c3c;
-  }
-`;
-
-const ScoreBreakdown = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 15px;
-  margin-top: 15px;
-  padding: 15px;
-  background: rgba(52, 152, 219, 0.1);
-  border-radius: 12px;
-`;
-
-const ScoreItem = styled.div`
-  text-align: center;
-
-  .number {
-    font-size: 24px;
-    font-weight: 600;
-    color: #2c3e50;
-  }
-
-  .label {
-    font-size: 12px;
-    color: #7f8c8d;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-  }
-`;
-
 const SocialShare = styled.div`
   margin-top: 25px;
   padding-top: 25px;
@@ -261,6 +206,7 @@ const LoadingMessage = styled.div`
   color: #666;
 `;
 
+// ---------- Main Component ----------
 const Quiz = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -276,19 +222,16 @@ const Quiz = () => {
   useEffect(() => {
     const checkAndLoadQuestions = async () => {
       try {
-        // First check if user has already attempted
         const checkResponse = await axios.post<{ status: string }>(
           "https://workflow.joshsoftware.com/webhook/josh-quiz/check",
           { email }
         );
 
         if (checkResponse.data.status === "attempted") {
-          // User has already attempted, redirect to landing page
           navigate("/", { replace: true });
           return;
         }
 
-        // If not attempted, load questions
         const quizQuestions = await fetchQuizQuestions();
         setQuestions(quizQuestions);
       } catch (error) {
@@ -318,7 +261,6 @@ const Quiz = () => {
       }
     });
 
-    // each correct answer = 20 points
     const totalScore = correctAnswers * 20;
     setScore(totalScore);
 
@@ -338,19 +280,13 @@ const Quiz = () => {
   };
 
   const shareToLinkedIn = () => {
-    const text = `I scored ${score}/${
-      questions.length * 20
-    } on Josh Software's quiz! 🎉`;
-    const url = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
-      window.location.href
-    )}`;
+    const url = `https://www.linkedin.com/sharing/share-offsite/`;
     window.open(url, "_blank", "width=600,height=400");
   };
 
   const shareToTwitter = () => {
-    const text = `I scored ${score}/${
-      questions.length * 20
-    } on Josh Software's quiz! 🎉 @joshsoftware`;
+    const text = `Excited to have joined the Josh Quiz Challenge at RubyConf India! A perfect mix of fun, learning, and community spirit.
+#JoshatRCI #Joshsoftware #RCI25 #Rubyconfindia #Rubyconfindia2025`;
     const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
       text
     )}`;
@@ -365,49 +301,92 @@ const Quiz = () => {
     return <LoadingMessage>Loading questions...</LoadingMessage>;
   }
 
- if (showResult) {
-  return (
-    <ResultMessage>
-      <SuccessIcon />
-      <h2>Quiz Completed Successfully!</h2>
+  if (showResult) {
+    const message = `
+Excited to have joined the Josh Quiz Challenge at RubyConf India! A perfect mix of fun, learning, and community spirit.
+#JoshatRCI #Joshsoftware #RCI25 #Rubyconfindia #Rubyconfindia2025`;
 
-      <ScoreDisplay>
-        <ScoreLabel>Your Score</ScoreLabel>
-        <ScoreValue>
-          {score}/{questions.length * 20}
-        </ScoreValue>
-      </ScoreDisplay>
+    const copyToClipboard = async () => {
+      try {
+        await navigator.clipboard.writeText(message);
+        alert("Text copied! Paste it on LinkedIn when sharing 🚀");
+      } catch (err) {
+        console.error("Copy failed:", err);
+      }
+    };
 
-      <SocialShare>
-        <h4>Claim Your Swags!</h4>
-        <b>
-          Take a screenshot of your score and tag @joshsoftware to claim your
-          swags!
-        </b>
+    return (
+      <ResultMessage>
+        <SuccessIcon />
+        <h2>Quiz Completed Successfully!</h2>
 
-        {/* Wrap inside flex container */}
-        <SocialButtons>
-          <SocialButton className="linkedin" onClick={shareToLinkedIn}>
-            <img
-              src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/linkedin.svg"
-              alt="LinkedIn"
-              style={{ width: 24, height: 24 }}
+        <ScoreDisplay>
+          <ScoreLabel>Your Score</ScoreLabel>
+          <ScoreValue>
+            {score}/{questions.length * 20}
+          </ScoreValue>
+        </ScoreDisplay>
+
+        <SocialShare>
+          <h4>Claim Your Swags!</h4>
+          <b>
+            Take a screenshot of your score and tag @joshsoftware to claim your
+            swags!
+          </b>
+
+          {/* Prefilled text box */}
+          <div style={{ margin: "20px 0" }}>
+            <textarea
+              value={message}
+              readOnly
+              rows={5}
+              style={{
+                width: "100%",
+                padding: "10px",
+                borderRadius: "8px",
+                border: "1px solid #ccc",
+                fontSize: "14px",
+                resize: "none",
+                marginBottom: "10px",
+              }}
             />
-          </SocialButton>
+            <button
+              onClick={copyToClipboard}
+              style={{
+                padding: "8px 16px",
+                background: "#007bff",
+                color: "white",
+                border: "none",
+                borderRadius: "6px",
+                cursor: "pointer",
+              }}
+            >
+              Copy Text
+            </button>
+          </div>
 
-          <SocialButton className="twitter" onClick={shareToTwitter}>
-            <img
-              src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/twitter.svg"
-              alt="Twitter"
-              style={{ width: 24, height: 24 }}
-            />
-          </SocialButton>
-        </SocialButtons>
-      </SocialShare>
-    </ResultMessage>
-  );
-}
+          {/* Share Buttons */}
+          <SocialButtons>
+            <SocialButton className="linkedin" onClick={shareToLinkedIn}>
+              <img
+                src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/linkedin.svg"
+                alt="LinkedIn"
+                style={{ width: 24, height: 24 }}
+              />
+            </SocialButton>
 
+            <SocialButton className="twitter" onClick={shareToTwitter}>
+              <img
+                src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/twitter.svg"
+                alt="Twitter"
+                style={{ width: 24, height: 24 }}
+              />
+            </SocialButton>
+          </SocialButtons>
+        </SocialShare>
+      </ResultMessage>
+    );
+  }
 
   const allQuestionsAnswered = questions.every((q) => currentAnswers[q.id]);
 
