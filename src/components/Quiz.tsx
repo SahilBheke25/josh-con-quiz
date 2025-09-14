@@ -285,8 +285,8 @@ const Quiz = () => {
   };
 
   const shareToTwitter = () => {
-    const text = `Excited to have joined the Josh Quiz Challenge at RubyConf India! A perfect mix of fun, learning, and community spirit.
-#JoshatRCI #Joshsoftware #RCI25 #Rubyconfindia #Rubyconfindia2025`;
+    const text = `Excited to have joined the Josh Quiz Challenge at Gophercon India! A perfect mix of fun, learning, and community spirit.
+#JoshatGophercon #Joshsoftware #GCI25 #GopherconIndia #GopherConIndia2025`;
     const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
       text
     )}`;
@@ -303,8 +303,8 @@ const Quiz = () => {
 
   if (showResult) {
     const message = `
-Excited to have joined the Josh Quiz Challenge at RubyConf India! A perfect mix of fun, learning, and community spirit.
-#JoshatRCI #Joshsoftware #RCI25 #Rubyconfindia #Rubyconfindia2025`;
+EExcited to have joined the Josh Quiz Challenge at Gophercon India! A perfect mix of fun, learning, and community spirit.
+#JoshatGophercon #Joshsoftware #GCI25 #GopherconIndia #GopherConIndia2025`;
 
     const copyToClipboard = async () => {
       try {
