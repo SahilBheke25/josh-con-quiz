@@ -122,17 +122,6 @@ const questions: Question[] = [
   },
   {
     id: 11,
-    question: "Which Josh speaker is presenting at RubyConf India 2025?",
-    options: {
-      A: "Prathamesh Sonpatki",
-      B: "Ratnadeep Deshmane",
-      C: "Vishwajeet Singh Desurkar",
-      D: "Puneet Khushwani"
-    },
-    correctAnswer: "C"
-  },
-  {
-    id: 12,
     question: "What philosophy underpins Josh Software’s approach to innovation?",
     options: {
       A: "Proprietary-first",
@@ -143,7 +132,7 @@ const questions: Question[] = [
     correctAnswer: "B"
   },
   {
-    id: 13,
+    id: 12,
     question: "What makes Sparkode unique compared to generic coding tests?",
     options: {
       A: "Multiple-choice only",
@@ -154,7 +143,7 @@ const questions: Question[] = [
     correctAnswer: "B"
   },
   {
-    id: 14,
+    id: 13,
     question: "How does Josh support financial institutions against fraud?",
     options: {
       A: "Staff training",
@@ -165,10 +154,10 @@ const questions: Question[] = [
     correctAnswer: "B"
   },
   {
-    id: 15,
-    question: "Who is the Platinum Sponsor of RubyConf India 2025?",
+    id: 14,
+    question: "Who is the Gold Sponsor of Gophercon India 2025?",
     options: {
-      A: "Simply Smart",
+      A: "NPCI",
       B: "Quick Insure",
       C: "Josh Software",
       D: "Lingo"
